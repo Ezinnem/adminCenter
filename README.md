@@ -1,2 +1,2 @@
 # adminCenter
-An adminstrative dashboard for monitoring the product activity in Zin and Zine.
+An administrative dashboard for monitoring the product activity in Zin and Zine.
