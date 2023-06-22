@@ -15,7 +15,11 @@ app.use(express.json());
 app.get("/api/v1/resturants", async (req, res) => {
     try {
         const allResturants = await pool.query("SELECT * FROM resturants");
-        res.json(allResturants.rows)
+        res.status(200).json({
+            status: "success",
+            number: allResturants.rows.length,
+            allResturants: allResturants.rows}
+            )
         
     } catch (err) {
         console.error(err.message)
@@ -28,7 +32,7 @@ app.get("/api/v1/resturants/:id", async(req, res) => {
     const { id } = req.params
     try {
         const oneResturant = await pool.query("SELECT * FROM resturants WHERE id =$1", [id]);
-        res.json(oneResturant.rows[0])
+        res.status(200).json(oneResturant.rows[0])
     } catch (err) {
         console.error(err.message)
     }
@@ -38,7 +42,7 @@ app.post("/api/v1/resturants", async(req, res) => {
     try {
         const {name, location, price_range} = req.body;
         const newResturant = await pool.query("INSERT INTO resturants (name, location, price_range) VALUES($1, $2, $3) RETURNING *", [name, location, price_range]);
-        res.json(newResturant.rows[0]); 
+        res.status(201).json(newResturant.rows[0]); 
     } catch (err) {
          console.error(err.message)
     }
@@ -51,7 +55,7 @@ app.put("/api/v1/resturants/:id", async(req, res) => {
         const {name, location, price_range} = req.body;
 
         const updatedResturant = await pool.query("UPDATE resturants SET name = $1, location = $2, price_range = $3 WHERE id = $4", [name, location, price_range, id]);
-        res.json("Resturant has been updated")
+        res.status(200).json("Resturant has been updated")
     } catch (err) {
         console.error(err.message)
     }
@@ -63,7 +67,7 @@ app.delete("/api/v1/resturants/:id", async(req, res) => {
         const {id} = req.params;
 
         const deleteResturant = await pool.query("DELETE FROM resturants WHERE id = $1", [id])
-        res.json("Resturant has been deleted")
+        res.status(204).json("Resturant has been deleted")
     } catch (err) {
         console.error(err.message)
     }
